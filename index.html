@@ -302,6 +302,55 @@ function deleteClient(cin) {
         });
     }
 }
+        
+document.getElementById('maladieForm').addEventListener('submit', (event) => {
+    event.preventDefault();
+
+    const maladieCin = document.getElementById('maladieCin').value;
+    const maladieType = document.getElementById('maladieType').value;
+    const maladieMedicaments = document.getElementById('maladieMedicaments').value;
+
+    const maladieRef = database.ref('patients/' + maladieCin + '/history').push(); // Ajouter une nouvelle entrée d'historique
+
+    maladieRef.set({
+        date: new Date().toISOString(),  // Utiliser la date actuelle
+        typeMaladie: maladieType,
+        medicaments: maladieMedicaments
+    }).then(() => {
+        alert("Maladie ajoutée avec succès !");
+        document.getElementById('maladieForm').reset();
+        document.getElementById('addMaladieContainer').style.display = 'none'; // Masquer le formulaire
+        loadClientHistory(maladieCin); // Recharger l'historique des maladies du patient
+    }).catch((error) => {
+        console.error('Erreur lors de l\'ajout de la maladie:', error);
+    });
+});
+        
+function loadClientHistory(cin) {
+    const clientRef = database.ref('patients/' + cin + '/history');
+    clientRef.once('value', (snapshot) => {
+        const data = snapshot.val();
+        const tableBody = document.getElementById('maladieTableBody');
+        tableBody.innerHTML = '';  // Vider le tableau avant de le remplir
+
+        if (data) {
+            Object.values(data).forEach(record => {
+                tableBody.innerHTML += `
+                    <tr>
+                        <td>${cin}</td>
+                        <td>${new Date(record.date).toLocaleDateString()}</td>
+                        <td>${record.typeMaladie}</td>
+                        <td>${record.medicaments}</td>
+                    </tr>
+                `;
+            });
+        } else {
+            tableBody.innerHTML = '<tr><td colspan="4">Aucun historique trouvé.</td></tr>';
+        }
+    });
+}
+
+
 
 
     </script>
