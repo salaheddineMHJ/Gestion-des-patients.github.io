@@ -1,0 +1,28 @@
+.buttonClass {
+    font-size: 15px;
+    font-family: Arial;
+    width: 50px; 
+    height: 40px;
+    border-width: 1px;
+    color: #fff;
+    border-color: #0f1010;
+    font-weight: bold;
+    border-radius: 8px;
+    box-shadow: 0px 10px 14px -7px #525353;
+    text-shadow: 0px 1px 0px #bfc4c7;
+    background: linear-gradient(#c55f5f, #922e2e);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+  }
+  
+  .buttonClass:hover {
+    background: linear-gradient(#ae1111, #e10825);
+  }
+  
+  .material-icons {
+    font-size: 20px; 
+    margin: 0;
+  }
+  
