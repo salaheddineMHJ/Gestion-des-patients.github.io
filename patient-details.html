@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Détails du Patient</title>
+    <!-- Import des styles Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Import des scripts Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <!-- Import des scripts jQuery et Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <style>
+        .container {
+            margin-top: 20px;
+        }
+        .btn-back {
+            background-color: #6c757d;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Détails du Patient</h1>
+        <div id="patientDetails">
+            <!-- Les détails du patient seront ajoutés ici dynamiquement -->
+        </div>
+        <a href="index.html" class="btn btn-back mt-3">Retour à la Liste des Clients</a>
+    </div>
+
+    <script>
+        // Configuration Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyCSwDwN0kwekR6U0V_FGnEM5JecyKmXWLI",
+            authDomain: "haja-d4b91.firebaseapp.com",
+            databaseURL: "https://haja-d4b91-default-rtdb.firebaseio.com",
+            projectId: "haja-d4b91",
+            storageBucket: "haja-d4b91.appspot.com",
+            messagingSenderId: "1680817769",
+            appId: "1:1680817769:web:c5b0410064c2911e116cf8",
+            measurementId: "G-DQEWC6LZPG"
+        };
+
+        // Initialiser Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // Récupérer le CIN depuis les paramètres d'URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const cin = urlParams.get('cin');
+
+        // Charger les détails du patient depuis Firebase
+        function loadPatientDetails() {
+            const clientRef = database.ref('patients/' + cin);
+            clientRef.once('value', (snapshot) => {
+                const data = snapshot.val();
+                const container = document.getElementById('patientDetails');
+                
+                if (data) {
+                    const age = calculateAge(data.dateNaissance);
+                    container.innerHTML = `
+                        <h2>Informations du Patient</h2>
+                        <ul class="list-group">
+                            <li class="list-group-item"><strong>CIN:</strong> ${data.cin}</li>
+                            <li class="list-group-item"><strong>Nom:</strong> ${data.nom}</li>
+                            <li class="list-group-item"><strong>Prénom:</strong> ${data.prenom}</li>
+                            <li class="list-group-item"><strong>Date de Naissance:</strong> ${data.dateNaissance}</li>
+                            <li class="list-group-item"><strong>Âge:</strong> ${age}</li>
+                            <li class="list-group-item"><strong>Adresse:</strong> ${data.adresse}</li>
+                        </ul>
+                        <h3 class="mt-4">Historique des Maladies</h3>
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Type de Maladie</th>
+                                    <th>Médicaments</th>
+                                </tr>
+                            </thead>
+                            <tbody id="maladieHistoryTableBody">
+                                <!-- L'historique sera ajouté ici dynamiquement -->
+                            </tbody>
+                        </table>
+                    `;
+                    loadPatientHistory();
+                } else {
+                    container.innerHTML = '<p>Patient non trouvé.</p>';
+                }
+            });
+        }
+
+        // Charger l'historique des maladies du patient
+        function loadPatientHistory() {
+            const historyRef = database.ref('patients/' + cin + '/history');
+            historyRef.once('value', (snapshot) => {
+                const data = snapshot.val();
+                const tableBody = document.getElementById('maladieHistoryTableBody');
+                tableBody.innerHTML = '';
+
+                if (data) {
+                    Object.values(data).forEach(record => {
+                        tableBody.innerHTML += `
+                            <tr>
+                                <td>${new Date(record.date).toLocaleDateString()}</td>
+                                <td>${record.typeMaladie}</td>
+                                <td>${record.medicaments}</td>
+                            </tr>
+                        `;
+                    });
+                } else {
+                    tableBody.innerHTML = '<tr><td colspan="3">Aucun historique trouvé.</td></tr>';
+                }
+            });
+        }
+
+        // Calculer l'âge à partir de la date de naissance
+        function calculateAge(dateNaissance) {
+            const birthDate = new Date(dateNaissance);
+            const ageDifMs = Date.now() - birthDate.getTime();
+            const ageDate = new Date(ageDifMs);
+            return Math.abs(ageDate.getUTCFullYear() - 1970);
+        }
+
+        // Charger les détails du patient lors du chargement de la page
+        document.addEventListener('DOMContentLoaded', loadPatientDetails);
+    </script>
+</body>
+</html>
