@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des patients</title>
+    <!-- Import des styles Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Import des scripts Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <!-- Import des scripts jQuery et Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="css/style_index.css">
+
+    
+</head>
+<body>
+    
+
+    <div class="container mt-4">
+       <br>
+        <div class="mb-3">
+            <div class="search-container">
+                <button id="searchBtn" class="btn btn-primary">
+                    <i class="material-icons button search">search</i>
+                </button>
+                <input type="text" id="searchCin" class="form-control" placeholder="Chercher par CIN">
+            </div>
+            
+            <button id="showFormBtn" class="btn btn-primary"> <i class="material-icons button add">add</i></button>
+           
+            
+        </div>
+
+        <!-- Formulaire d'ajout et mise à jour d'un client -->
+        <div id="clientFormContainer" class="mt-3">
+            <h2>Ajouter ou Mettre à Jour un patient</h2>
+            <form id="clientForm">
+                <div class="form-group">
+                    <label for="cin">Numéro de CIN</label>
+                    <input type="text" class="form-control" id="cin" required>
+                </div>
+                <div class="form-group">
+                    <label for="nom">Nom</label>
+                    <input type="text" class="form-control" id="nom">
+                </div>
+                <div class="form-group">
+                    <label for="prenom">Prénom</label>
+                    <input type="text" class="form-control" id="prenom">
+                </div>
+                <div class="form-group">
+                    <label for="dateNaissance">Date de Naissance</label>
+                    <input type="date" class="form-control" id="dateNaissance">
+                </div>
+                <div class="form-group">
+                    <label for="adresse">Adresse</label>
+                    <input type="text" class="form-control" id="adresse">
+                </div>
+                <button type="submit" class="btn btn-primary">Enregistrer</button>
+                <button type="button" id="cancelBtn" class="btn btn-primary">Annuler</button>
+            </form>
+            <div id="confirmationMessage" class="alert alert-success mt-3 d-none" role="alert">
+                Client mis à jour ou ajouté avec succès !
+            </div>
+        </div>
+<br>
+        <!-- Table de liste des clients -->
+        
+        <table class="table table-striped"> 
+            <thead>
+                <tr>
+                    <th>Numéro de CIN</th>
+                    <th>Nom</th>
+                    <th>Prénom</th>
+                    <th>Âge</th>
+                    <th>Adresse</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="clientTableBody">
+                <!-- Les clients seront ajoutés ici dynamiquement -->
+            </tbody>
+        </table>
+
+        <!-- Formulaire d'ajout de maladie -->
+        <div id="addMaladieContainer" class="mt-3">
+            <h2>Ajouter une Maladie </h2>
+            <form id="maladieForm">
+                <div class="form-group">
+                    <label for="maladieCin">Numéro de CIN</label>
+                    <input type="text" class="form-control" id="maladieCin" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="maladieType">Type de Maladie</label>
+                    <input type="text" class="form-control" id="maladieType" required>
+                </div>
+                <div class="form-group">
+                    <label for="maladieMedicaments">Médicaments</label>
+                    <input type="text" class="form-control" id="maladieMedicaments" required>
+                </div>
+               <button type="submit" class="buttonClass "class="btn btn-primary">Ajouter Maladie</button>
+                <button type="button" id="cancelMaladieBtn" class="buttonClass " class="btn btn-secondary">Annuler</button>
+              
+            </form>
+            <br>
+        </div>
+
+        <!-- Table d'historique des maladies -->
+        <div id="maladieTableContainer" class="mt-3">
+            <h2>Historique des Maladies</h2>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Numéro de CIN</th>
+                        <th>Date</th>
+                        <th>Type de Maladie</th>
+                        <th>Médicaments</th>
+                    </tr>
+                </thead>
+                <tbody id="maladieTableBody">
+                    <!-- Les historiques seront ajoutés ici dynamiquement -->
+                </tbody>
+            </table>
+        </div>
+        <br>
+    </div>
+
+    <script>
+        // Configuration Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyCSwDwN0kwekR6U0V_FGnEM5JecyKmXWLI",
+            authDomain: "haja-d4b91.firebaseapp.com",
+            databaseURL: "https://haja-d4b91-default-rtdb.firebaseio.com",
+            projectId: "haja-d4b91",
+            storageBucket: "haja-d4b91.appspot.com",
+            messagingSenderId: "1680817769",
+            appId: "1:1680817769:web:c5b0410064c2911e116cf8",
+            measurementId: "G-DQEWC6LZPG"
+        };
+
+        // Initialiser Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // Afficher le formulaire pour ajouter un patient
+        document.getElementById('showFormBtn').addEventListener('click', () => {
+            document.getElementById('clientFormContainer').style.display = 'block';
+            document.getElementById('maladieTableContainer').style.display = 'none';
+        });
+
+        // Ajouter ou mettre à jour un client
+        document.getElementById('clientForm').addEventListener('submit', (event) => {
+            event.preventDefault();
+
+            const cin = document.getElementById('cin').value;
+            const nom = document.getElementById('nom').value;
+            const prenom = document.getElementById('prenom').value;
+            const dateNaissance = document.getElementById('dateNaissance').value;
+            const adresse = document.getElementById('adresse').value;
+
+            const clientRef = database.ref('patients/' + cin);
+            clientRef.set({
+                cin: cin,
+                nom: nom,
+                prenom: prenom,
+                dateNaissance: dateNaissance,
+                adresse: adresse
+            }).then(() => {
+                document.getElementById('confirmationMessage').classList.remove('d-none');
+                setTimeout(() => {
+                    document.getElementById('confirmationMessage').classList.add('d-none');
+                }, 3000);
+                document.getElementById('clientForm').reset();
+                document.getElementById('clientFormContainer').style.display = 'none'; // Masquer après ajout
+                loadClients(); // Recharger la liste des clients
+            }).catch((error) => {
+                console.error('Erreur lors de l\'ajout ou de la mise à jour du client:', error);
+            });
+        });
+
+        // Charger les clients
+      
+function loadClients(filterCin = '') {
+    const clientsRef = database.ref('patients/');
+    clientsRef.once('value', (snapshot) => {
+        const data = snapshot.val();
+        const tableBody = document.getElementById('clientTableBody');
+        tableBody.innerHTML = '';  // Vider le tableau avant de le remplir
+
+        if (data) {
+            <!-- Inside the loadClients function -->
+Object.values(data).forEach(client => {
+    if (!filterCin || client.cin.includes(filterCin)) {
+        const age = calculateAge(client.dateNaissance);
+        tableBody.innerHTML += `
+            <tr>
+                <td>${client.cin}</td>
+                <td>${client.nom}</td>
+                <td>${client.prenom}</td>
+                <td>${age}</td>
+                <td>${client.adresse}</td>
+                <td>
+                    <button class="btn btn-info btn-sm" onclick="showAddMaladieForm('${client.cin}')"><i class="material-icons button add">add</i></button>
+                    
+                    <a href="patient-details.html?cin=${client.cin}" class="btn btn-info btn-sm"><i class="material-icons button view">visibility</i> </a>
+                    <i class="material-icons button edit" onclick="editClient('${client.cin}')">edit</i>
+                    <i class="material-icons button delete" onclick="deleteClient('${client.cin}')">delete</i>
+                </td>
+            </tr>
+        `;
+    }
+});
+        }
+    });
+}
+
+        // Calculer l'âge à partir de la date de naissance
+        function calculateAge(dateNaissance) {
+            const birthDate = new Date(dateNaissance);
+            const ageDifMs = Date.now() - birthDate.getTime();
+            const ageDate = new Date(ageDifMs);
+            return Math.abs(ageDate.getUTCFullYear() - 1970);
+        }
+
+        // Rechercher un client par CIN
+        document.getElementById('searchBtn').addEventListener('click', () => {
+            const searchCin = document.getElementById('searchCin').value;
+            loadClients(searchCin);
+        });
+
+        // Afficher le formulaire pour ajouter une maladie
+        function showAddMaladieForm(cin) {
+            document.getElementById('addMaladieContainer').style.display = 'block';
+            document.getElementById('maladieCin').value = cin;
+        }
+
+        // Afficher l'historique des maladies
+        function showMaladieHistory(cin) {
+            document.getElementById('maladieTableContainer').style.display = 'block';
+            loadClientHistory(cin);
+        }
+
+        // Charger l'historique des maladies
+        function loadClientHistory(cin) {
+            const clientRef = database.ref('patients/' + cin + '/history');
+            clientRef.once('value', (snapshot) => {
+                const data = snapshot.val();
+                const tableBody = document.getElementById('maladieTableBody');
+                tableBody.innerHTML = '';
+
+                if (data) {
+                    Object.values(data).forEach(record => {
+                        tableBody.innerHTML += `
+                            <tr>
+                                <td>${cin}</td>
+                                <td>${new Date(record.date).toLocaleDateString()}</td>
+                                <td>${record.typeMaladie}</td>
+                                <td>${record.medicaments}</td>
+                            </tr>
+                        `;
+                    });
+                } else {
+                    tableBody.innerHTML = '<tr><td colspan="4">Aucun historique trouvé.</td></tr>';
+                }
+            });
+        }
+
+        // Annuler le formulaire du patient
+        document.getElementById('cancelBtn').addEventListener('click', () => {
+            document.getElementById('clientFormContainer').style.display = 'none';
+            document.getElementById('clientForm').reset();
+        });
+
+        // Annuler le formulaire de la maladie
+        document.getElementById('cancelMaladieBtn').addEventListener('click', () => {
+            document.getElementById('addMaladieContainer').style.display = 'none';
+            document.getElementById('maladieForm').reset();
+        });
+
+        // Charger les clients dès le chargement de la page
+        document.addEventListener('DOMContentLoaded', () => loadClients());
+        // Fonction pour éditer un client
+function editClient(cin) {
+    const clientRef = database.ref('patients/' + cin);
+    clientRef.once('value', (snapshot) => {
+        const client = snapshot.val();
+        if (client) {
+            document.getElementById('cin').value = client.cin;
+            document.getElementById('nom').value = client.nom;
+            document.getElementById('prenom').value = client.prenom;
+            document.getElementById('dateNaissance').value = client.dateNaissance;
+            document.getElementById('adresse').value = client.adresse;
+            document.getElementById('clientFormContainer').style.display = 'block';
+        }
+    });
+}
+// Fonction pour supprimer un client
+function deleteClient(cin) {
+    if (confirm("Êtes-vous sûr de vouloir supprimer ce client ?")) {
+        const clientRef = database.ref('patients/' + cin);
+        clientRef.remove().then(() => {
+            alert("Client supprimé avec succès !");
+            loadClients(); // Recharger la liste après la suppression
+        }).catch((error) => {
+            console.error('Erreur lors de la suppression du client:', error);
+        });
+    }
+}
+// Ajouter une maladie à Firebase
+document.getElementById('maladieForm').addEventListener('submit', (event) => {
+    event.preventDefault();
+
+    const maladieCin = document.getElementById('maladieCin').value;
+    const maladieType = document.getElementById('maladieType').value;
+    const maladieMedicaments = document.getElementById('maladieMedicaments').value;
+
+    const maladieRef = database.ref('patients/' + maladieCin + '/history').push(); // Ajouter une nouvelle entrée d'historique
+
+    maladieRef.set({
+        date: new Date().toISOString(),  // Utiliser la date actuelle
+        typeMaladie: maladieType,
+        medicaments: maladieMedicaments
+    }).then(() => {
+        alert("Maladie ajoutée avec succès !");
+        document.getElementById('maladieForm').reset();
+        document.getElementById('addMaladieContainer').style.display = 'none'; // Masquer le formulaire
+        loadClientHistory(maladieCin); // Recharger l'historique des maladies du patient
+    }).catch((error) => {
+        console.error('Erreur lors de l\'ajout de la maladie:', error);
+    });
+});
+// Charger l'historique des maladies
+function loadClientHistory(cin) {
+    const clientRef = database.ref('patients/' + cin + '/history');
+    clientRef.once('value', (snapshot) => {
+        const data = snapshot.val();
+        const tableBody = document.getElementById('maladieTableBody');
+        tableBody.innerHTML = '';  // Vider le tableau avant de le remplir
+
+        if (data) {
+            Object.values(data).forEach(record => {
+                tableBody.innerHTML += `
+                    <tr>
+                        <td>${cin}</td>
+                        <td>${new Date(record.date).toLocaleDateString()}</td>
+                        <td>${record.typeMaladie}</td>
+                        <td>${record.medicaments}</td>
+                    </tr>
+                `;
+            });
+        } else {
+            tableBody.innerHTML = '<tr><td colspan="4">Aucun historique trouvé.</td></tr>';
+        }
+    });
+}
+
+
+    </script>
+</body>
+</html>

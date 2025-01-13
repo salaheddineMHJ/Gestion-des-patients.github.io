@@ -1,0 +1,117 @@
+/* Variables de couleur */
+:root {
+  --primary-bg-color: #f0f4f7;
+  --secondary-bg-color: #ffffff;
+  --primary-color: #007bff;
+  --accent-color: #ff5733;
+  --dark-text-color: #333;
+  --light-text-color: #666;
+  --hover-bg-color: #0056b3;
+  --table-bg-color: #f8f9fa;
+  --table-border-color: #ddd;
+}
+
+/* Style général du corps */
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: var(--primary-bg-color);
+  color: var(--dark-text-color);
+  margin: 0;
+  padding: 0;
+}
+
+/* Styles pour la page principale */
+.container {
+  margin-top: 50px;
+}
+
+/* Titres */
+h2, h3 {
+  color: var(--primary-color);
+  font-weight: bold;
+}
+
+/* Liste des détails du patient */
+.list-group-item {
+  background-color: var(--secondary-bg-color);
+  color: var(--dark-text-color);
+  font-size: 1rem;
+  padding: 10px;
+  border: 1px solid var(--table-border-color);
+}
+
+/* Tableaux */
+.table {
+  margin-top: 20px;
+  background-color: var(--table-bg-color);
+  border: 1px solid var(--table-border-color);
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+  background-color: var(--primary-bg-color);
+}
+
+.table th, .table td {
+  padding: 10px;
+  text-align: left;
+  font-size: 1rem;
+  border: 1px solid var(--table-border-color);
+}
+
+/* Table headers */
+.table th {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+/* Style du bouton fixe */
+.buttonClass {
+  font-size: 16px;
+  font-family: Arial, sans-serif;
+  width: 60px;
+  height: 50px;
+  padding: 12px;
+  text-decoration: none;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: linear-gradient(to bottom, var(--accent-color), #922e2e);
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0px 10px 14px -7px #525353;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.3s;
+}
+
+.buttonClass:hover {
+  background: linear-gradient(to bottom, #ae1111, #e10825);
+  transform: translateY(-3px);
+}
+
+.material-icons {
+  font-size: 20px;
+  margin: 0;
+}
+
+/* En-têtes et bordures */
+h2 {
+  border-bottom: 2px solid var(--primary-color);
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+}
+
+/* Sections supplémentaires */
+.mt-4 {
+  margin-top: 20px;
+}
+
+.mt-2 {
+  margin-top: 10px;
+}
+

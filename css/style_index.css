@@ -1,0 +1,205 @@
+/* Styles de base pour le body */
+html, body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f7fa;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+/* Amélioration de la taille et de l'alignement du formulaire */
+#clientFormContainer, #maladieTableContainer, #addMaladieContainer {
+    display: none;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+/* Amélioration du bouton de recherche */
+#searchCin {
+    width: 80%;
+    margin-right: 10px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    padding: 10px;
+}
+
+#searchBtn {
+    padding: 10px 20px;
+    background-color: #5cb85c;
+    color: white;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+#searchBtn:hover {
+    background-color: #4cae4c;
+    transform: translateY(-2px);
+}
+
+/* Styles généraux des boutons */
+.btn, .btn-primary, .buttonClass {
+    font-size: 16px;
+    padding: 10px 20px;
+    border-radius: 30px;
+    text-transform: uppercase;
+    font-weight: bold;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border: none;
+    color: white;
+}
+
+.btn-primary:hover, .buttonClass:hover {
+    background-color: #0056b3;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+}
+
+/* Styles de la table */
+.table {
+    width: 100%;
+    margin: 20px 0;
+    border-collapse: collapse;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.table th, .table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.table th {
+    background-color: #007bff;
+    color: white;
+    font-weight: bold;
+}
+
+.table tbody tr:hover {
+    background-color: #f7f7f7;
+    cursor: pointer;
+}
+
+.table tbody tr:last-child {
+    border-bottom: none;
+}
+
+/* Amélioration des icônes */
+.material-icons {
+    font-size: 24px;
+    cursor: pointer;
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.material-icons.edit {
+    color: #007bff;
+}
+
+.material-icons.delete {
+    color: #dc3545;
+}
+
+.material-icons:hover {
+    opacity: 0.8;
+    transform: scale(1.1);
+}
+
+.material-icons.edit:hover {
+    color: #0056b3;
+}
+
+.material-icons.delete:hover {
+    color: #b52e1e;
+}
+
+/* Animation de transition pour la page */
+body {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+
+/* Amélioration de la visibilité mobile */
+@media screen and (max-width: 768px) {
+    .table {
+        width: 100%;
+        display: block;
+        overflow-x: auto;
+    }
+
+    #searchCin {
+        width: 100%;
+        margin-right: 0;
+    }
+
+    .btn, .btn-primary {
+        width: 100%;
+    }
+}
+
+/* Container pour le champ de recherche et le bouton */
+.search-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;  /* Ajoute un espace sous la barre de recherche */
+}
+
+/* Styles pour le bouton de recherche */
+#searchBtn {
+    background-color: var(--primary-color);
+    color: white;
+    border-radius: 4px;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    margin-right: 10px;  /* Espace entre le bouton et la barre de recherche */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+#searchBtn:hover {
+    background-color: #007bff;
+    transform: translateY(-2px);
+}
+
+/* Styles pour la barre de recherche */
+#searchCin {
+    width: 100%;
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid var(--border-color);
+    font-size: 1rem;
+}
+
+/* Style de l'icône de recherche */
+.material-icons {
+    font-size: 20px;
+    color: rgb(20, 16, 16);
+    transition: transform 0.3s ease;
+}
+
+.material-icons:hover {
+    transform: scale(1.2);
+}
