@@ -1,4 +1,4 @@
-# Patient Management System 🏥
+
 
 # Patient Management System 🏥
 
@@ -51,7 +51,7 @@ See [LICENSE](LICENSE) for details.
 - **UI Components**  
   ![Material Icons](https://img.shields.io/badge/Material_Icons-2.0-4285F4?logo=material-design)
 
-   ## Installation 🚀
+## Installation 🚀
 1. Clone repository:
 ```bash
 git clone https://github.com/your-username/Gestion-des-patients.github.io.git
